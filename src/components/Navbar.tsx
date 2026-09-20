@@ -83,12 +83,12 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3">
           {/* Theme Toggle Button */}
           <button
             onClick={onToggleTheme}
             title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-sky-400 transition-all"
+            className="p-1.5 sm:p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-sky-400 transition-all"
           >
             {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-500" />}
           </button>
@@ -96,24 +96,25 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Add Moment Button */}
           <button
             onClick={onOpenAddReceipt}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-xs font-mono font-bold text-white shadow-glow-cyan transition-all hover:scale-105"
+            className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-[11px] sm:text-xs font-mono font-bold text-white shadow-glow-cyan transition-all hover:scale-105 whitespace-nowrap"
           >
             <span className="text-sm">+</span>
-            <span>LOG MOMENT</span>
+            <span className="hidden xs:inline">LOG MOMENT</span>
+            <span className="xs:hidden">LOG</span>
           </button>
 
           {/* Quick Search Button */}
           <button
             onClick={onOpenSearch}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-slate-300 transition-all hover:border-sky-500/30"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-slate-300 transition-all hover:border-sky-500/30"
           >
             <Search className="w-3.5 h-3.5 text-sky-400" />
-            <span className="hidden sm:inline">Search traces...</span>
-            <span className="bg-[#090A0F] px-1.5 py-0.5 rounded text-[10px] text-slate-400 border border-white/10 font-mono">⌘K</span>
+            <span className="hidden md:inline">Search traces...</span>
+            <span className="hidden lg:inline bg-[#090A0F] px-1.5 py-0.5 rounded text-[10px] text-slate-400 border border-white/10 font-mono">⌘K</span>
           </button>
 
           {/* Record Count Badge */}
-          <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-950/40 border border-sky-500/20 text-xs font-mono text-sky-300">
+          <div className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-950/40 border border-sky-500/20 text-xs font-mono text-sky-300">
             <Sparkles className="w-3.5 h-3.5 text-sky-400 animate-pulse" />
             <span>{totalCount.toLocaleString()} Traces</span>
           </div>
@@ -121,7 +122,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white"
+            className="md:hidden p-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
