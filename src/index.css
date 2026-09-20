@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #090A0F;
+    color: #F1F5F9;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #090A0F;
+}
+::-webkit-scrollbar-thumb {
+  background: #1E293B;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Thermal Paper Receipt Effect */
+.receipt-paper {
+  background: #0F121A;
+  background-image: 
+    radial-gradient(ellipse at 50% -20%, rgba(56, 189, 248, 0.08), transparent 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(255, 255, 255, 0.04);
+}
+
+.receipt-paper:hover {
+  border-color: rgba(56, 189, 248, 0.25);
+  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.8), 0 0 20px -5px rgba(56, 189, 248, 0.15);
+}
+
+/* Jagged Receipt Edge Bottom */
+.receipt-sawtooth-bottom {
+  position: relative;
+}
+.receipt-sawtooth-bottom::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: radial-gradient(circle, transparent, transparent 50%, #0F121A 50%, #0F121A 100%);
+  background-size: 10px 10px;
+}
+
+/* Dashed Divider */
+.receipt-divider {
+  border-top: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+/* Barcode Graphic Effect */
+.barcode-strip {
+  background: repeating-linear-gradient(
+    90deg,
+    #94A3B8,
+    #94A3B8 2px,
+    transparent 2px,
+    transparent 4px,
+    #94A3B8 4px,
+    #94A3B8 7px,
+    transparent 7px,
+    transparent 9px
+  );
+  opacity: 0.6;
+}
+
+/* Glassmorphism Surface */
+.glass-panel {
+  background: rgba(18, 20, 28, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-hover {
+  transition: all 0.25s ease-in-out;
+}
+.glass-panel-hover:hover {
+  background: rgba(24, 27, 38, 0.85);
+  border-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-2px);
+}
+
+/* Neon Text Accent */
+.text-glow-cyan {
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+}
+.text-glow-purple {
+  text-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
+}
+
+/* Animated Connecting Line */
+@keyframes pulseLine {
+  0% { stroke-dashoffset: 24; }
+  100% { stroke-dashoffset: 0; }
+}
+.connecting-line-dash {
+  stroke-dasharray: 6 6;
+  animation: pulseLine 1.5s linear infinite;
+}
