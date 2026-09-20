@@ -48,14 +48,16 @@ export const StatCard: React.FC<StatCardProps> = ({
   }[accentColor];
 
   return (
-    <div
+    <button
+      type="button"
       onClick={onClick}
-      className={`group relative p-6 rounded-2xl bg-surface/70 border ${colorStyles.border} backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer ${colorStyles.glow}`}
+      aria-label={`${title}: ${value}. ${subtitle}`}
+      className={`group relative text-left w-full p-6 rounded-2xl bg-surface/70 border ${colorStyles.border} backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer ${colorStyles.glow} focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none`}
     >
       <div className="flex items-center justify-between mb-4">
         <span className="text-xs font-mono tracking-wider text-slate-400 uppercase">{title}</span>
         <div className={`p-2.5 rounded-xl ${colorStyles.iconBg} transition-transform group-hover:scale-110`}>
-          <Icon className="w-5 h-5" />
+          <Icon className="w-5 h-5" aria-hidden="true" />
         </div>
       </div>
 
@@ -70,6 +72,6 @@ export const StatCard: React.FC<StatCardProps> = ({
           <span>{trend}</span>
         </div>
       )}
-    </div>
+    </button>
   );
 };

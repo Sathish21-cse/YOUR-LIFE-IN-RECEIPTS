@@ -1,6 +1,6 @@
 import React from 'react';
 import { StoryCluster } from '../data/dataTypes';
-import { BookOpen, ArrowRight, Sparkles, Clock, MapPin, Layers } from 'lucide-react';
+import { BookOpen, ArrowRight, Clock, MapPin } from 'lucide-react';
 
 interface StoryCardProps {
   story: StoryCluster;
@@ -9,9 +9,11 @@ interface StoryCardProps {
 
 export const StoryCard: React.FC<StoryCardProps> = ({ story, onExploreStory }) => {
   return (
-    <div
+    <button
+      type="button"
       onClick={() => onExploreStory(story)}
-      className="group relative rounded-2xl bg-surface/80 border border-white/10 hover:border-purple-500/50 backdrop-blur-xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-glow-purple cursor-pointer flex flex-col justify-between overflow-hidden"
+      aria-label={`Explore story: ${story.title}. Timeframe: ${story.timeframe}`}
+      className="group relative text-left w-full rounded-2xl bg-surface/80 border border-white/10 hover:border-purple-500/50 backdrop-blur-xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-glow-purple cursor-pointer flex flex-col justify-between overflow-hidden focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none"
     >
       {/* Decorative Corner Glow */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-purple-500/20 transition-all" />
@@ -21,7 +23,7 @@ export const StoryCard: React.FC<StoryCardProps> = ({ story, onExploreStory }) =
         <div className="flex items-center justify-between gap-2 mb-4">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-xl bg-purple-500/20 text-purple-300">
-              <BookOpen className="w-4 h-4" />
+              <BookOpen className="w-4 h-4" aria-hidden="true" />
             </div>
             <span className="text-xs font-mono font-bold tracking-wider text-purple-300 uppercase">
               {story.timeframe}
@@ -58,20 +60,20 @@ export const StoryCard: React.FC<StoryCardProps> = ({ story, onExploreStory }) =
       <div className="pt-4 border-t border-white/10 flex items-center justify-between">
         <div className="flex items-center gap-3 text-xs font-mono text-slate-400">
           <div className="flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5 text-slate-500" />
+            <Clock className="w-3.5 h-3.5 text-slate-500" aria-hidden="true" />
             <span>{story.stats.timeSpan}</span>
           </div>
           <div className="flex items-center gap-1">
-            <MapPin className="w-3.5 h-3.5 text-slate-500" />
+            <MapPin className="w-3.5 h-3.5 text-slate-500" aria-hidden="true" />
             <span>{story.stats.primaryLocation}</span>
           </div>
         </div>
 
-        <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/40 font-mono text-xs font-bold group-hover:bg-purple-500/30 group-hover:scale-105 transition-all">
+        <div className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/40 font-mono text-xs font-bold group-hover:bg-purple-500/30 group-hover:scale-105 transition-all">
           <span>EXPLORE STORY</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </button>
+          <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+        </div>
       </div>
-    </div>
+    </button>
   );
 };

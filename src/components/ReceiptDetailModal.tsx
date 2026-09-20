@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Receipt } from '../data/dataTypes';
 import { getCategoryColor, getCategoryIcon } from '../utils/formatting';
-import { X, Clock, MapPin, CreditCard, Music, Sparkles, Network, Share2, Check } from 'lucide-react';
+import { X, Network, Share2, Check } from 'lucide-react';
 
 interface ReceiptDetailModalProps {
   receipt: Receipt | null;
@@ -16,6 +16,16 @@ export const ReceiptDetailModal: React.FC<ReceiptDetailModalProps> = ({
 }) => {
   const [copied, setCopied] = React.useState(false);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && receipt) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [receipt, onClose]);
+
   if (!receipt) return null;
 
   const catStyles = getCategoryColor(receipt.category);
@@ -28,7 +38,12 @@ export const ReceiptDetailModal: React.FC<ReceiptDetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="receipt-detail-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+    >
       
       {/* Modal Container */}
       <div 
@@ -47,10 +62,12 @@ export const ReceiptDetailModal: React.FC<ReceiptDetailModalProps> = ({
           </div>
           
           <button
+            type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+            aria-label="Close receipt details modal"
+            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-sky-400"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
@@ -63,7 +80,7 @@ export const ReceiptDetailModal: React.FC<ReceiptDetailModalProps> = ({
               {CatIcon}
             </div>
             
-            <h3 className="text-2xl font-extrabold text-white tracking-tight">
+            <h3 id="receipt-detail-title" className="text-2xl font-extrabold text-white tracking-tight">
               {receipt.title}
             </h3>
             <p className="text-sm text-slate-300 font-medium">
@@ -80,10 +97,15 @@ export const ReceiptDetailModal: React.FC<ReceiptDetailModalProps> = ({
             
             <div className="flex items-center justify-between text-slate-400 pb-2 border-b border-white/10">
               <span>RECORD ID</span>
-              <div className="flex items-center gap-1 cursor-pointer hover:text-white" onClick={handleCopyId}>
+              <button 
+                type="button" 
+                className="flex items-center gap-1 cursor-pointer hover:text-white text-xs font-mono" 
+                onClick={handleCopyId}
+                aria-label="Copy receipt record ID"
+              >
                 <span>{receipt.id}</span>
                 {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Share2 className="w-3 h-3" />}
-              </div>
+              </button>
             </div>
 
             <div className="flex items-center justify-between">
@@ -133,7 +155,7 @@ export const ReceiptDetailModal: React.FC<ReceiptDetailModalProps> = ({
 
             {/* Barcode Graphic */}
             <div className="pt-4 text-center space-y-1">
-              <div className="h-8 barcode-strip rounded" />
+              <div className="h-8 barcode-strip rounded" aria-hidden="true" />
               <span className="text-[10px] text-slate-500 tracking-widest">{receipt.timestamp}</span>
             </div>
 
@@ -159,6 +181,7 @@ export const ReceiptDetailModal: React.FC<ReceiptDetailModalProps> = ({
         {/* Modal Action Bar */}
         <div className="p-4 bg-surface-border/40 border-t border-white/10 flex items-center justify-between gap-3">
           <button
+            type="button"
             onClick={onClose}
             className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-sm font-medium border border-white/10"
           >
@@ -166,6 +189,7 @@ export const ReceiptDetailModal: React.FC<ReceiptDetailModalProps> = ({
           </button>
 
           <button
+            type="button"
             onClick={() => {
               onClose();
               onFindConnections(receipt);

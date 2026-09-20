@@ -1,15 +1,19 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, lazy, Suspense } from 'react';
 import { DataPayload, PatternInsight, Receipt, StoryCluster } from './data/dataTypes';
 import receiptsDataRaw from './data/receiptsData.json';
 import { Navbar } from './components/Navbar';
-import { HomePage } from './pages/HomePage';
-import { ExplorePage } from './pages/ExplorePage';
-import { ConnectionsPage } from './pages/ConnectionsPage';
-import { StoriesPage } from './pages/StoriesPage';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { LoadingSkeleton } from './components/LoadingSkeleton';
 import { ReceiptDetailModal } from './components/ReceiptDetailModal';
 import { StoryViewModal } from './components/StoryViewModal';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { AddReceiptModal } from './components/AddReceiptModal';
+
+// Code-split page components for optimal Core Web Vitals & small initial bundle size
+const HomePage = lazy(() => import('./pages/HomePage').then(m => ({ default: m.HomePage })));
+const ExplorePage = lazy(() => import('./pages/ExplorePage').then(m => ({ default: m.ExplorePage })));
+const ConnectionsPage = lazy(() => import('./pages/ConnectionsPage').then(m => ({ default: m.ConnectionsPage })));
+const StoriesPage = lazy(() => import('./pages/StoriesPage').then(m => ({ default: m.StoriesPage })));
 
 const initialData = receiptsDataRaw as DataPayload;
 
@@ -100,102 +104,106 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090A0F] text-slate-100 flex flex-col font-sans selection:bg-sky-500/30 selection:text-sky-200">
-      
-      {/* Navigation Header */}
-      <Navbar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onOpenSearch={() => setIsSearchOpen(true)}
-        onOpenAddReceipt={() => setIsAddReceiptOpen(true)}
-        totalCount={dynamicPayload.summary.totalReceipts}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-      />
+    <ErrorBoundary>
+      <div className="min-h-screen bg-[#090A0F] text-slate-100 flex flex-col font-sans selection:bg-sky-500/30 selection:text-sky-200">
+        
+        {/* Navigation Header */}
+        <Navbar
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          onOpenSearch={() => setIsSearchOpen(true)}
+          onOpenAddReceipt={() => setIsAddReceiptOpen(true)}
+          totalCount={dynamicPayload.summary.totalReceipts}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+        />
 
-      {/* Main Page View Router */}
-      <main className="flex-1 pt-6">
-        {activeTab === 'overview' && (
-          <HomePage
-            data={dynamicPayload}
-            onNavigateTab={setActiveTab}
-            onSelectPattern={handleSelectPattern}
-            onOpenStory={(s) => setActiveStory(s)}
-            onSelectReceipt={handleOpenReceiptDetail}
-          />
-        )}
+        {/* Main Page View Router with Suspense */}
+        <main className="flex-1 pt-6">
+          <Suspense fallback={<LoadingSkeleton />}>
+            {activeTab === 'overview' && (
+              <HomePage
+                data={dynamicPayload}
+                onNavigateTab={setActiveTab}
+                onSelectPattern={handleSelectPattern}
+                onOpenStory={(s) => setActiveStory(s)}
+                onSelectReceipt={handleOpenReceiptDetail}
+              />
+            )}
 
-        {activeTab === 'explore' && (
-          <ExplorePage
-            data={dynamicPayload}
-            onSelectReceipt={handleOpenReceiptDetail}
-            onFindConnections={handleFindConnectionsForReceipt}
-            onOpenAddReceipt={() => setIsAddReceiptOpen(true)}
-            initialQuery={exploreQuery}
-          />
-        )}
+            {activeTab === 'explore' && (
+              <ExplorePage
+                data={dynamicPayload}
+                onSelectReceipt={handleOpenReceiptDetail}
+                onFindConnections={handleFindConnectionsForReceipt}
+                onOpenAddReceipt={() => setIsAddReceiptOpen(true)}
+                initialQuery={exploreQuery}
+              />
+            )}
 
-        {activeTab === 'connections' && (
-          <ConnectionsPage
-            data={dynamicPayload}
-            selectedAnchorReceipt={selectedAnchorReceipt}
-            onSelectReceipt={handleOpenReceiptDetail}
-            onSetAnchorReceipt={(r) => setSelectedAnchorReceipt(r)}
-          />
-        )}
+            {activeTab === 'connections' && (
+              <ConnectionsPage
+                data={dynamicPayload}
+                selectedAnchorReceipt={selectedAnchorReceipt}
+                onSelectReceipt={handleOpenReceiptDetail}
+                onSetAnchorReceipt={(r) => setSelectedAnchorReceipt(r)}
+              />
+            )}
 
-        {activeTab === 'stories' && (
-          <StoriesPage
-            data={dynamicPayload}
-            onOpenStory={(s) => setActiveStory(s)}
-          />
-        )}
-      </main>
+            {activeTab === 'stories' && (
+              <StoriesPage
+                data={dynamicPayload}
+                onOpenStory={(s) => setActiveStory(s)}
+              />
+            )}
+          </Suspense>
+        </main>
 
-      {/* Footer */}
-      <footer className="border-t border-white/10 bg-[#06070B] py-8 text-center text-xs text-slate-500 font-mono space-y-2">
-        <p className="text-slate-400 font-bold tracking-widest uppercase">
-          RECEIPT — Every Moment Leaves a Trace.
-        </p>
-        <p>Built for WEBRUSH Hackathon · Frontend Data Storytelling Experience</p>
-        <p className="text-[10px] text-slate-600">
-          Loaded {dynamicPayload.summary.totalReceipts.toLocaleString()} traces across Spotify Listening History & Multi-Facet Financial Transactions.
-        </p>
-      </footer>
+        {/* Footer */}
+        <footer className="border-t border-white/10 bg-[#06070B] py-8 text-center text-xs text-slate-500 font-mono space-y-2">
+          <p className="text-slate-400 font-bold tracking-widest uppercase">
+            RECEIPT — Every Moment Leaves a Trace.
+          </p>
+          <p>Built for WEBRUSH Hackathon · Frontend Data Storytelling Experience</p>
+          <p className="text-[10px] text-slate-600">
+            Loaded {dynamicPayload.summary.totalReceipts.toLocaleString()} traces across Spotify Listening History & Multi-Facet Financial Transactions.
+          </p>
+        </footer>
 
-      {/* Receipt Detail Modal */}
-      <ReceiptDetailModal
-        receipt={selectedReceipt}
-        onClose={() => setSelectedReceipt(null)}
-        onFindConnections={handleFindConnectionsForReceipt}
-      />
+        {/* Receipt Detail Modal */}
+        <ReceiptDetailModal
+          receipt={selectedReceipt}
+          onClose={() => setSelectedReceipt(null)}
+          onFindConnections={handleFindConnectionsForReceipt}
+        />
 
-      {/* Story View Player Modal */}
-      <StoryViewModal
-        story={activeStory}
-        allReceipts={dynamicPayload.receipts}
-        onClose={() => setActiveStory(null)}
-        onSelectReceipt={handleOpenReceiptDetail}
-      />
+        {/* Story View Player Modal */}
+        <StoryViewModal
+          story={activeStory}
+          allReceipts={dynamicPayload.receipts}
+          onClose={() => setActiveStory(null)}
+          onSelectReceipt={handleOpenReceiptDetail}
+        />
 
-      {/* Global Search Modal */}
-      <GlobalSearchModal
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-        data={dynamicPayload}
-        onSelectReceipt={handleOpenReceiptDetail}
-        onGoToExploreWithQuery={handleGoToExploreWithQuery}
-      />
+        {/* Global Search Modal */}
+        <GlobalSearchModal
+          isOpen={isSearchOpen}
+          onClose={() => setIsSearchOpen(false)}
+          data={dynamicPayload}
+          onSelectReceipt={handleOpenReceiptDetail}
+          onGoToExploreWithQuery={handleGoToExploreWithQuery}
+        />
 
-      {/* Add Receipt Modal */}
-      <AddReceiptModal
-        isOpen={isAddReceiptOpen}
-        onClose={() => setIsAddReceiptOpen(false)}
-        onAddReceipt={handleAddReceipt}
-        categories={dynamicPayload.categories}
-      />
+        {/* Add Receipt Modal */}
+        <AddReceiptModal
+          isOpen={isAddReceiptOpen}
+          onClose={() => setIsAddReceiptOpen(false)}
+          onAddReceipt={handleAddReceipt}
+          categories={dynamicPayload.categories}
+        />
 
-    </div>
+      </div>
+    </ErrorBoundary>
   );
 }
 

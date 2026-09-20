@@ -32,9 +32,11 @@ export const PatternCard: React.FC<PatternCardProps> = ({ pattern, onExplore }) 
   }[pattern.accentColor || 'cyan'];
 
   return (
-    <div
+    <button
+      type="button"
       onClick={() => onExplore(pattern)}
-      className={`group relative p-6 rounded-2xl bg-surface/80 border ${accentStyles.border} backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer ${accentStyles.glow} flex flex-col justify-between`}
+      aria-label={`Explore pattern: ${pattern.title}. ${pattern.headline}`}
+      className={`group relative text-left w-full p-6 rounded-2xl bg-surface/80 border ${accentStyles.border} backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer ${accentStyles.glow} flex flex-col justify-between focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none`}
     >
       <div>
         {/* Top Eyebrow Badges */}
@@ -59,15 +61,15 @@ export const PatternCard: React.FC<PatternCardProps> = ({ pattern, onExplore }) 
       {/* Supporting Data Metric & Action */}
       <div className="pt-4 border-t border-white/10 flex items-center justify-between">
         <div className="flex items-center gap-1.5 text-xs font-mono text-slate-300">
-          <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+          <Sparkles className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
           <span>{pattern.metric}</span>
         </div>
 
         <div className="flex items-center gap-1 text-xs font-mono text-sky-400 group-hover:translate-x-1 transition-transform">
           <span>Trace Pattern</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
         </div>
       </div>
-    </div>
+    </button>
   );
 };

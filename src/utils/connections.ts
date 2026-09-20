@@ -16,9 +16,9 @@ export function findConnectionsForReceipt(
     const diffMs = Math.abs(rTime - targetTime);
     const diffMins = Math.floor(diffMs / 60000);
 
-    // 1. Time Proximity (within 4 hours = 240 mins)
+    // 1. High Time Proximity (within 240 mins = 4 hours)
     if (diffMins <= 240) {
-      let desc = `Occurred ${diffMins === 0 ? 'at the exact same time' : `${diffMins} minutes apart`}`;
+      let desc = `Occurred ${diffMins === 0 ? 'at the exact same minute' : `${diffMins} minutes apart`}`;
       if (r.category !== targetReceipt.category) {
         desc += ` (${r.category} + ${targetReceipt.category})`;
       }
@@ -31,31 +31,36 @@ export function findConnectionsForReceipt(
       continue;
     }
 
-    // 2. Same Day Connection (if within 24 hours on same date)
+    // 2. Same Location Trace match
+    if (
+      targetReceipt.location &&
+      r.location &&
+      targetReceipt.location !== 'Audio Stream' &&
+      r.location !== 'Audio Stream' &&
+      targetReceipt.location.toLowerCase() === r.location.toLowerCase()
+    ) {
+      candidates.push({
+        receipt: r,
+        relationType: 'same_location',
+        timeDiffMinutes: diffMins,
+        description: `Location trace match in ${r.location}`
+      });
+      continue;
+    }
+
+    // 3. Same Day Connection (within 24 hours on same date)
     if (r.date === targetDate) {
       candidates.push({
         receipt: r,
         relationType: 'same_day',
         timeDiffMinutes: diffMins,
-        description: `Same day trace (${r.time})`
+        description: `Same date trace (${r.time})`
       });
       continue;
     }
-
-    // 3. Location Trace match
-    if (targetReceipt.location && r.location && targetReceipt.location !== 'Audio Stream' && r.location !== 'Audio Stream') {
-      if (targetReceipt.location.toLowerCase() === r.location.toLowerCase()) {
-        candidates.push({
-          receipt: r,
-          relationType: 'same_location',
-          timeDiffMinutes: diffMins,
-          description: `Location match in ${r.location}`
-        });
-      }
-    }
   }
 
-  // Sort candidates by lowest time difference / strength
+  // Sort candidates by lowest time difference / proximity strength
   candidates.sort((a, b) => (a.timeDiffMinutes || 999999) - (b.timeDiffMinutes || 999999));
 
   // Take top N unique candidates
@@ -70,7 +75,7 @@ export function findConnectionsForReceipt(
     } else if (minTime <= 120) {
       narrative = `Sequential activity cluster: Activity traces recorded within ${Math.round(minTime / 60)} hour(s) in close sequence.`;
     } else {
-      narrative = `Daily temporal trace: Multiple distinct interactions logged across the same timeframe.`;
+      narrative = `Daily temporal trace: Multiple distinct interactions logged across the same date timeframe.`;
     }
   } else {
     narrative = "Single isolated trace with no immediate nearby activity records within window.";
@@ -85,7 +90,6 @@ export function findConnectionsForReceipt(
 }
 
 export function getSampleInterestingMoments(receipts: Receipt[], count: number = 6): Receipt[] {
-  // Select receipts that have rich metadata or fall into interesting categories
   const lateNight = receipts.filter(r => r.tags.includes('Late Night'));
   const highValue = receipts.filter(r => r.amount && r.amount > 500);
   const musicSpree = receipts.filter(r => r.type === 'music');
@@ -93,7 +97,6 @@ export function getSampleInterestingMoments(receipts: Receipt[], count: number =
 
   const pool = [...lateNight, ...highValue, ...transit, ...musicSpree];
   
-  // Pick distinct IDs
   const seen = new Set<string>();
   const result: Receipt[] = [];
   
