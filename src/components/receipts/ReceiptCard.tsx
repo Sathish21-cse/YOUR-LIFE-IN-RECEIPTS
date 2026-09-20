@@ -1,6 +1,6 @@
 import React from 'react';
-import { Receipt } from '../data/dataTypes';
-import { getCategoryColor, getCategoryIcon } from '../utils/formatting';
+import { Receipt } from '../../data/dataTypes';
+import { getCategoryColor, getCategoryIcon } from '../../utils/formatting';
 import { Clock, MapPin, ArrowRight } from 'lucide-react';
 
 interface ReceiptCardProps {

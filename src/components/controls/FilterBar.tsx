@@ -1,5 +1,5 @@
 import React from 'react';
-import { FilterOptions } from '../utils/analytics';
+import { FilterOptions } from '../../utils/analytics';
 import { RotateCcw, ArrowUpDown } from 'lucide-react';
 
 interface FilterBarProps {

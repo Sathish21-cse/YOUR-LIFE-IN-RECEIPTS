@@ -1,6 +1,6 @@
 import React from 'react';
 import { Sparkles, ArrowRight, Compass, Music, CreditCard, MapPin, Network } from 'lucide-react';
-import { SummaryData } from '../data/dataTypes';
+import { SummaryData } from '../../data/dataTypes';
 
 interface HeroProps {
   summary: SummaryData;
@@ -22,7 +22,7 @@ export const Hero: React.FC<HeroProps> = ({
         
         {/* Eyebrow Pill */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-300 text-xs font-mono mb-8 backdrop-blur-md shadow-glow-cyan animate-pulse">
-          <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+          <Sparkles className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
           <span>Interactive Digital Story & Data Journal</span>
         </div>
 
@@ -43,18 +43,22 @@ export const Hero: React.FC<HeroProps> = ({
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
           <button
+            type="button"
             onClick={onDiscoverStory}
-            className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold shadow-glow-cyan hover:shadow-cyan-500/40 hover:scale-[1.02] transition-all duration-200 group"
+            aria-label="Discover your story narrative"
+            className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold shadow-glow-cyan hover:shadow-cyan-500/40 hover:scale-[1.02] transition-all duration-200 group focus-visible:ring-2 focus-visible:ring-sky-400"
           >
             <span>DISCOVER YOUR STORY</span>
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
           </button>
           
           <button
+            type="button"
             onClick={onExploreReceipts}
-            className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-surface-border/60 hover:bg-white/10 text-slate-200 font-medium border border-white/10 hover:border-white/20 transition-all duration-200"
+            aria-label="Explore receipt records"
+            className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-surface-border/60 hover:bg-white/10 text-slate-200 font-medium border border-white/10 hover:border-white/20 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-sky-400"
           >
-            <Compass className="w-5 h-5 text-sky-400" />
+            <Compass className="w-5 h-5 text-sky-400" aria-hidden="true" />
             <span>EXPLORE RECEIPTS</span>
           </button>
         </div>
@@ -74,7 +78,7 @@ export const Hero: React.FC<HeroProps> = ({
           {/* Stat 2: Music Hours */}
           <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col items-center">
             <div className="flex items-center gap-1 text-xs font-mono text-sky-400 mb-1">
-              <Music className="w-3 h-3" />
+              <Music className="w-3 h-3" aria-hidden="true" />
               <span>MUSIC ACTIVITY</span>
             </div>
             <span className="text-xl sm:text-2xl font-mono font-bold text-sky-300">
@@ -86,7 +90,7 @@ export const Hero: React.FC<HeroProps> = ({
           {/* Stat 3: Transactions */}
           <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col items-center">
             <div className="flex items-center gap-1 text-xs font-mono text-amber-400 mb-1">
-              <CreditCard className="w-3 h-3" />
+              <CreditCard className="w-3 h-3" aria-hidden="true" />
               <span>TRANSACTIONS</span>
             </div>
             <span className="text-xl sm:text-2xl font-mono font-bold text-amber-300">
@@ -98,7 +102,7 @@ export const Hero: React.FC<HeroProps> = ({
           {/* Stat 4: Locations */}
           <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col items-center">
             <div className="flex items-center gap-1 text-xs font-mono text-emerald-400 mb-1">
-              <MapPin className="w-3 h-3" />
+              <MapPin className="w-3 h-3" aria-hidden="true" />
               <span>LOCATIONS</span>
             </div>
             <span className="text-xl sm:text-2xl font-mono font-bold text-emerald-300">
@@ -110,7 +114,7 @@ export const Hero: React.FC<HeroProps> = ({
           {/* Stat 5: Patterns */}
           <div className="col-span-2 md:col-span-1 p-3 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col items-center">
             <div className="flex items-center gap-1 text-xs font-mono text-purple-400 mb-1">
-              <Network className="w-3 h-3" />
+              <Network className="w-3 h-3" aria-hidden="true" />
               <span>PATTERNS</span>
             </div>
             <span className="text-xl sm:text-2xl font-mono font-bold text-purple-300">

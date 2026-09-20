@@ -1,13 +1,13 @@
 import React, { useState, useMemo, lazy, Suspense } from 'react';
 import { DataPayload, PatternInsight, Receipt, StoryCluster } from './data/dataTypes';
 import receiptsDataRaw from './data/receiptsData.json';
-import { Navbar } from './components/Navbar';
-import { ErrorBoundary } from './components/ErrorBoundary';
-import { LoadingSkeleton } from './components/LoadingSkeleton';
-import { ReceiptDetailModal } from './components/ReceiptDetailModal';
-import { StoryViewModal } from './components/StoryViewModal';
-import { GlobalSearchModal } from './components/GlobalSearchModal';
-import { AddReceiptModal } from './components/AddReceiptModal';
+import { Navbar } from './components/layout/Navbar';
+import { ErrorBoundary } from './components/layout/ErrorBoundary';
+import { LoadingSkeleton } from './components/feedback/LoadingSkeleton';
+import { ReceiptDetailModal } from './components/receipts/ReceiptDetailModal';
+import { StoryViewModal } from './components/stories/StoryViewModal';
+import { GlobalSearchModal } from './components/controls/GlobalSearchModal';
+import { AddReceiptModal } from './components/receipts/AddReceiptModal';
 
 // Code-split page components for optimal Core Web Vitals & small initial bundle size
 const HomePage = lazy(() => import('./pages/HomePage').then(m => ({ default: m.HomePage })));

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { StoryCluster, Receipt } from '../data/dataTypes';
-import { getCategoryColor, getCategoryIcon } from '../utils/formatting';
-import { X, ChevronRight, ChevronLeft, Sparkles, Play, Pause, CheckCircle2, Clock, MapPin, Receipt as ReceiptIcon } from 'lucide-react';
+import { StoryCluster, Receipt } from '../../data/dataTypes';
+import { getCategoryColor, getCategoryIcon } from '../../utils/formatting';
+import { X, ChevronRight, ChevronLeft, Play, Pause, CheckCircle2, MapPin, Receipt as ReceiptIcon } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 interface StoryViewModalProps {
@@ -44,7 +44,6 @@ export const StoryViewModal: React.FC<StoryViewModalProps> = ({
             return prev + 1;
           } else {
             setIsPlaying(false);
-            // Trigger celebratory confetti on story completion!
             confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
             return prev;
           }
@@ -61,7 +60,12 @@ export const StoryViewModal: React.FC<StoryViewModalProps> = ({
   const CatIcon = getCategoryIcon(activeReceipt.category);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-in fade-in duration-300">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="story-player-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-in fade-in duration-300"
+    >
       
       {/* Immersive Story Player Container */}
       <div 
@@ -80,21 +84,23 @@ export const StoryViewModal: React.FC<StoryViewModalProps> = ({
                 {story.timeframe}
               </span>
             </div>
-            <h2 className="text-xl font-extrabold text-white tracking-tight">
+            <h2 id="story-player-title" className="text-xl font-extrabold text-white tracking-tight">
               "{story.title}"
             </h2>
           </div>
 
           <button
+            type="button"
             onClick={onClose}
-            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+            aria-label="Close story viewer player"
+            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-purple-400"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
         {/* Step Progress Bar */}
-        <div className="w-full bg-slate-900 h-1.5 flex">
+        <div className="w-full bg-slate-900 h-1.5 flex" role="progressbar" aria-valuenow={currentStep + 1} aria-valuemin={1} aria-valuemax={storyReceipts.length}>
           {storyReceipts.map((_, idx) => (
             <div
               key={idx}
@@ -113,10 +119,12 @@ export const StoryViewModal: React.FC<StoryViewModalProps> = ({
             <span>SEQUENCE STEP {currentStep + 1} OF {storyReceipts.length}</span>
             <div className="flex items-center gap-2">
               <button
+                type="button"
                 onClick={() => setIsPlaying(!isPlaying)}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 text-xs hover:bg-purple-500/30 transition-all"
+                aria-label={isPlaying ? 'Pause auto play' : 'Start auto play'}
+                className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 text-xs hover:bg-purple-500/30 transition-all focus-visible:ring-2 focus-visible:ring-purple-400"
               >
-                {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                {isPlaying ? <Pause className="w-3.5 h-3.5" aria-hidden="true" /> : <Play className="w-3.5 h-3.5" aria-hidden="true" />}
                 <span>{isPlaying ? 'Pause Story' : 'Auto Play'}</span>
               </button>
             </div>
@@ -151,7 +159,7 @@ export const StoryViewModal: React.FC<StoryViewModalProps> = ({
             {/* Factual Narrative Commentary for this step */}
             <div className="p-4 rounded-xl bg-sky-950/40 border border-sky-500/30 text-xs text-sky-200 space-y-1 font-sans">
               <div className="flex items-center gap-1.5 font-mono font-bold text-sky-400">
-                <CheckCircle2 className="w-4 h-4" />
+                <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
                 <span>DATA EVIDENCE TRACE</span>
               </div>
               <p className="leading-relaxed">
@@ -164,7 +172,7 @@ export const StoryViewModal: React.FC<StoryViewModalProps> = ({
             {/* Metadata Footer */}
             <div className="pt-3 border-t border-dashed border-white/15 flex items-center justify-between text-xs font-mono text-slate-400">
               <div className="flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-slate-500" />
+                <MapPin className="w-3.5 h-3.5 text-slate-500" aria-hidden="true" />
                 <span>{activeReceipt.location || 'Digital Trace'}</span>
               </div>
 
@@ -186,23 +194,27 @@ export const StoryViewModal: React.FC<StoryViewModalProps> = ({
         {/* Player Navigation Controls */}
         <div className="p-6 bg-surface-border/40 border-t border-white/10 flex items-center justify-between gap-4">
           <button
+            type="button"
             onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
             disabled={currentStep === 0}
+            aria-label="Previous step in story"
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-40 disabled:pointer-events-none text-slate-200 text-sm font-medium border border-white/10"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-4 h-4" aria-hidden="true" />
             <span>Previous</span>
           </button>
 
           <button
+            type="button"
             onClick={() => onSelectReceipt(activeReceipt)}
             className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-mono border border-white/10"
           >
-            <ReceiptIcon className="w-4 h-4 text-sky-400" />
+            <ReceiptIcon className="w-4 h-4 text-sky-400" aria-hidden="true" />
             <span>Inspect Full Receipt</span>
           </button>
 
           <button
+            type="button"
             onClick={() => {
               if (currentStep < storyReceipts.length - 1) {
                 setCurrentStep(prev => prev + 1);
@@ -210,10 +222,11 @@ export const StoryViewModal: React.FC<StoryViewModalProps> = ({
                 onClose();
               }
             }}
+            aria-label="Next step in story"
             className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-sm font-bold shadow-glow-purple hover:scale-[1.02] transition-all"
           >
             <span>{currentStep < storyReceipts.length - 1 ? 'Next Step' : 'Finish Story'}</span>
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
 

@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { DataPayload, Receipt } from '../data/dataTypes';
-import { ConnectionGraph } from '../components/ConnectionGraph';
+import { ConnectionGraph } from '../components/connections/ConnectionGraph';
 import { findConnectionsForReceipt, getSampleInterestingMoments } from '../utils/connections';
-import { Network, Sparkles, RefreshCw } from 'lucide-react';
+import { Network } from 'lucide-react';
 
 interface ConnectionsPageProps {
   data: DataPayload;
@@ -17,15 +17,12 @@ export const ConnectionsPage: React.FC<ConnectionsPageProps> = ({
   onSelectReceipt,
   onSetAnchorReceipt
 }) => {
-  // Sample interesting preset starting moments
   const presetMoments = useMemo(() => {
     return getSampleInterestingMoments(data.receipts, 6);
   }, [data.receipts]);
 
-  // Current active anchor receipt
   const activeAnchor = selectedAnchorReceipt || presetMoments[0] || data.receipts[0];
 
-  // Calculate cluster connections for active anchor
   const cluster = useMemo(() => {
     return findConnectionsForReceipt(activeAnchor, data.receipts);
   }, [activeAnchor, data.receipts]);
@@ -36,7 +33,7 @@ export const ConnectionsPage: React.FC<ConnectionsPageProps> = ({
       {/* Page Header */}
       <div className="space-y-2">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-mono">
-          <Network className="w-3.5 h-3.5 text-purple-400" />
+          <Network className="w-3.5 h-3.5 text-purple-400" aria-hidden="true" />
           <span>SIGNATURE FEATURE</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight uppercase">

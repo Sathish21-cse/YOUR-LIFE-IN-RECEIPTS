@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { Receipt } from '../data/dataTypes';
-import { getCategoryColor, getCategoryIcon } from '../utils/formatting';
+import { Receipt } from '../../data/dataTypes';
+import { getCategoryColor, getCategoryIcon } from '../../utils/formatting';
 import { X, Network, Share2, Check } from 'lucide-react';
 
 interface ReceiptDetailModalProps {

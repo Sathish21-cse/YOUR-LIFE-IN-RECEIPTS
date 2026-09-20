@@ -1,10 +1,10 @@
 import React from 'react';
 import { DataPayload, PatternInsight, Receipt, StoryCluster } from '../data/dataTypes';
-import { Hero } from '../components/Hero';
-import { StatCard } from '../components/StatCard';
-import { PatternCard } from '../components/PatternCard';
-import { StoryCard } from '../components/StoryCard';
-import { ActivityHeatmap } from '../components/ActivityHeatmap';
+import { Hero } from '../components/Hero/Hero';
+import { StatCard } from '../components/insights/StatCard';
+import { PatternCard } from '../components/insights/PatternCard';
+import { StoryCard } from '../components/stories/StoryCard';
+import { ActivityHeatmap } from '../components/timeline/ActivityHeatmap';
 import { Music, CreditCard, MapPin, Network, Sparkles, ArrowRight, BookOpen } from 'lucide-react';
 
 interface HomePageProps {
@@ -41,7 +41,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-300 text-xs font-mono mb-2">
-                <Sparkles className="w-3.5 h-3.5" />
+                <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>EXECUTIVE DATA METRICS</span>
               </div>
               <h2 className="text-3xl font-extrabold text-white tracking-tight">
@@ -53,11 +53,13 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
 
             <button
+              type="button"
               onClick={() => onNavigateTab('explore')}
-              className="flex items-center gap-2 text-xs font-mono text-sky-400 hover:text-sky-300 group"
+              aria-label={`Explore all ${summary.totalReceipts.toLocaleString()} receipts`}
+              className="flex items-center gap-2 text-xs font-mono text-sky-400 hover:text-sky-300 group focus-visible:ring-2 focus-visible:ring-sky-400"
             >
               <span>Explore All Receipts ({summary.totalReceipts.toLocaleString()})</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
             </button>
           </div>
 
@@ -108,7 +110,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         <section className="space-y-8">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-mono mb-2">
-              <Network className="w-3.5 h-3.5" />
+              <Network className="w-3.5 h-3.5" aria-hidden="true" />
               <span>ALGORITHMIC DISCOVERY</span>
             </div>
             <h2 className="text-3xl font-extrabold text-white tracking-tight">
@@ -146,7 +148,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-mono mb-2">
-                <BookOpen className="w-3.5 h-3.5" />
+                <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>SIGNATURE STORYTELLING</span>
               </div>
               <h2 className="text-3xl font-extrabold text-white tracking-tight">
@@ -158,11 +160,13 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
 
             <button
+              type="button"
               onClick={() => onNavigateTab('stories')}
-              className="flex items-center gap-2 text-xs font-mono text-purple-400 hover:text-purple-300 group"
+              aria-label={`View all ${stories.length} discovered stories`}
+              className="flex items-center gap-2 text-xs font-mono text-purple-400 hover:text-purple-300 group focus-visible:ring-2 focus-visible:ring-purple-400"
             >
               <span>View All Stories ({stories.length})</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
             </button>
           </div>
 
@@ -200,11 +204,13 @@ export const HomePage: React.FC<HomePageProps> = ({
 
             <div className="pt-4">
               <button
+                type="button"
                 onClick={() => onNavigateTab('explore')}
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-bold shadow-glow-cyan hover:scale-[1.02] transition-all"
+                aria-label="Explore all trace receipts"
+                className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-bold shadow-glow-cyan hover:scale-[1.02] transition-all focus-visible:ring-2 focus-visible:ring-sky-400"
               >
                 <span>EXPLORE ALL TRACES</span>
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-5 h-5" aria-hidden="true" />
               </button>
             </div>
           </div>

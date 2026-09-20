@@ -1,7 +1,7 @@
 import React from 'react';
 import { DataPayload, StoryCluster } from '../data/dataTypes';
-import { StoryCard } from '../components/StoryCard';
-import { BookOpen, Sparkles } from 'lucide-react';
+import { StoryCard } from '../components/stories/StoryCard';
+import { BookOpen } from 'lucide-react';
 
 interface StoriesPageProps {
   data: DataPayload;
@@ -18,7 +18,7 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({
       {/* Page Header */}
       <div className="space-y-2">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-mono">
-          <BookOpen className="w-3.5 h-3.5 text-purple-400" />
+          <BookOpen className="w-3.5 h-3.5 text-purple-400" aria-hidden="true" />
           <span>SIGNATURE FEATURE</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight uppercase">

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { DataPayload, Receipt } from '../data/dataTypes';
-import { filterReceipts } from '../utils/analytics';
+import { DataPayload, Receipt } from '../../data/dataTypes';
+import { filterReceipts } from '../../utils/analytics';
 import { Search, X, Sparkles, ArrowRight } from 'lucide-react';
-import { getCategoryIcon } from '../utils/formatting';
+import { getCategoryIcon } from '../../utils/formatting';
 
 interface GlobalSearchModalProps {
   isOpen: boolean;
@@ -21,7 +21,6 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
 }) => {
   const [query, setQuery] = useState('');
 
-  // Keybinding listener for Cmd+K / Ctrl+K
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -50,7 +49,12 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     : [];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Global search traces modal"
+      className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+    >
       
       <div 
         className="relative w-full max-w-2xl bg-[#0F121A] border border-white/15 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
@@ -59,20 +63,23 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         
         {/* Search Header */}
         <div className="p-4 bg-surface-border/30 border-b border-white/10 flex items-center gap-3">
-          <Search className="w-5 h-5 text-sky-400" />
+          <Search className="w-5 h-5 text-sky-400" aria-hidden="true" />
           <input
             type="text"
             autoFocus
+            aria-label="Search digital trace records"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search artists, tracks, merchants, locations, notes..."
             className="w-full bg-transparent text-white font-sans text-base placeholder-slate-500 focus:outline-none"
           />
           <button
+            type="button"
             onClick={onClose}
+            aria-label="Close global search modal"
             className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
@@ -89,13 +96,15 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                 {searchResults.map((r) => {
                   const CatIcon = getCategoryIcon(r.category);
                   return (
-                    <div
+                    <button
                       key={r.id}
+                      type="button"
                       onClick={() => {
                         onClose();
                         onSelectReceipt(r);
                       }}
-                      className="p-3 rounded-xl bg-white/[0.03] hover:bg-white/10 border border-white/5 flex items-center justify-between gap-3 cursor-pointer transition-all"
+                      aria-label={`Select search result: ${r.title} by ${r.subtitle}`}
+                      className="w-full text-left p-3 rounded-xl bg-white/[0.03] hover:bg-white/10 border border-white/5 flex items-center justify-between gap-3 cursor-pointer transition-all focus-visible:ring-2 focus-visible:ring-sky-400"
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="p-2 rounded-lg bg-sky-500/10 text-sky-400 flex-shrink-0">
@@ -109,13 +118,14 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
 
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <span className="text-xs font-mono text-slate-400">{r.formattedDate}</span>
-                        <ArrowRight className="w-4 h-4 text-sky-400" />
+                        <ArrowRight className="w-4 h-4 text-sky-400" aria-hidden="true" />
                       </div>
-                    </div>
+                    </button>
                   );
                 })}
 
                 <button
+                  type="button"
                   onClick={() => {
                     onClose();
                     onGoToExploreWithQuery(query);
@@ -133,13 +143,13 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
             )
           ) : (
             <div className="py-8 text-center text-slate-400 space-y-3">
-              <Sparkles className="w-6 h-6 text-sky-400 mx-auto animate-pulse" />
+              <Sparkles className="w-6 h-6 text-sky-400 mx-auto animate-pulse" aria-hidden="true" />
               <p className="text-xs font-mono">Type anything to instantly search across 4,000+ digital life receipts.</p>
               <div className="flex flex-wrap justify-center gap-2 pt-2 text-[11px] font-mono text-slate-400">
-                <button onClick={() => setQuery('Lana Del Rey')} className="px-2.5 py-1 rounded bg-white/5 border border-white/10 hover:text-white">Lana Del Rey</button>
-                <button onClick={() => setQuery('Netflix')} className="px-2.5 py-1 rounded bg-white/5 border border-white/10 hover:text-white">Netflix</button>
-                <button onClick={() => setQuery('Train')} className="px-2.5 py-1 rounded bg-white/5 border border-white/10 hover:text-white">Train</button>
-                <button onClick={() => setQuery('Food')} className="px-2.5 py-1 rounded bg-white/5 border border-white/10 hover:text-white">Food</button>
+                <button type="button" onClick={() => setQuery('Lana Del Rey')} className="px-2.5 py-1 rounded bg-white/5 border border-white/10 hover:text-white">Lana Del Rey</button>
+                <button type="button" onClick={() => setQuery('Netflix')} className="px-2.5 py-1 rounded bg-white/5 border border-white/10 hover:text-white">Netflix</button>
+                <button type="button" onClick={() => setQuery('Train')} className="px-2.5 py-1 rounded bg-white/5 border border-white/10 hover:text-white">Train</button>
+                <button type="button" onClick={() => setQuery('Food')} className="px-2.5 py-1 rounded bg-white/5 border border-white/10 hover:text-white">Food</button>
               </div>
             </div>
           )}

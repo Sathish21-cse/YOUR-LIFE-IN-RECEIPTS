@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoryCluster } from '../data/dataTypes';
+import { StoryCluster } from '../../data/dataTypes';
 import { BookOpen, ArrowRight, Clock, MapPin } from 'lucide-react';
 
 interface StoryCardProps {

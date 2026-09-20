@@ -1,5 +1,5 @@
 import React from 'react';
-import { PatternInsight } from '../data/dataTypes';
+import { PatternInsight } from '../../data/dataTypes';
 import { Sparkles, ArrowRight } from 'lucide-react';
 
 interface PatternCardProps {

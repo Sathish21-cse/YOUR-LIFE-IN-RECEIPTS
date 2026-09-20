@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Clock, Sparkles, Filter } from 'lucide-react';
+import React from 'react';
+import { Clock, Filter } from 'lucide-react';
 
 interface ActivityHeatmapProps {
   activityByHour: number[];
@@ -38,7 +38,7 @@ export const ActivityHeatmap: React.FC<ActivityHeatmapProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-300 text-xs font-mono mb-2">
-            <Clock className="w-3.5 h-3.5" />
+            <Clock className="w-3.5 h-3.5" aria-hidden="true" />
             <span>24-HOUR DIGITAL RHYTHM MATRIX</span>
           </div>
           <h3 className="text-xl font-bold text-white tracking-tight">
@@ -51,22 +51,27 @@ export const ActivityHeatmap: React.FC<ActivityHeatmapProps> = ({
 
         {selectedHour !== null && (
           <button
+            type="button"
             onClick={() => onSelectHour(-1)}
+            aria-label="Clear active hour density filter"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-500/20 text-sky-300 text-xs font-mono border border-sky-500/40 hover:bg-sky-500/30"
           >
-            <Filter className="w-3.5 h-3.5" />
+            <Filter className="w-3.5 h-3.5" aria-hidden="true" />
             <span>Clear Hour Filter ({formatHourLabel(selectedHour)})</span>
           </button>
         )}
       </div>
 
       {/* 24-Hour Grid Heatmap */}
-      <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-12 gap-2">
+      <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-12 gap-2" role="group" aria-label="24 Hour activity rhythm grid">
         {activityByHour.map((count, hour) => {
           const isSelected = selectedHour === hour;
           return (
             <button
               key={hour}
+              type="button"
+              aria-pressed={isSelected}
+              aria-label={`Hour ${formatHourLabel(hour)}: ${count} activity traces`}
               onClick={() => onSelectHour(hour)}
               className={`p-3 rounded-xl flex flex-col items-center justify-between transition-all duration-200 ${getHeatmapColor(count)} ${
                 isSelected ? 'ring-2 ring-sky-300 scale-105 z-10' : 'hover:scale-105'

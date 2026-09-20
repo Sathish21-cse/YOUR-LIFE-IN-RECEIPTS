@@ -1,6 +1,6 @@
 import React from 'react';
-import { ConnectionCluster, Receipt } from '../data/dataTypes';
-import { getCategoryColor, getCategoryIcon } from '../utils/formatting';
+import { ConnectionCluster, Receipt } from '../../data/dataTypes';
+import { getCategoryColor, getCategoryIcon } from '../../utils/formatting';
 import { Network, Sparkles, Clock, ArrowDown, MapPin, CheckCircle2 } from 'lucide-react';
 
 interface ConnectionGraphProps {
@@ -28,20 +28,23 @@ export const ConnectionGraph: React.FC<ConnectionGraphProps> = ({
       {/* Preset Moments Starter Bar */}
       <div className="p-4 rounded-2xl bg-surface/60 border border-white/10 backdrop-blur-xl">
         <div className="flex items-center gap-2 mb-3">
-          <Sparkles className="w-4 h-4 text-sky-400" />
+          <Sparkles className="w-4 h-4 text-sky-400" aria-hidden="true" />
           <span className="text-xs font-mono text-slate-300 font-bold uppercase tracking-wider">
             PICK A STARTING TRACE MOMENT
           </span>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2" role="group" aria-label="Select anchor moment">
           {presetMoments.map((r) => {
             const isSelected = r.id === sourceReceipt.id;
             return (
               <button
                 key={r.id}
+                type="button"
+                aria-pressed={isSelected}
                 onClick={() => onChangeSource(r)}
-                className={`p-2.5 rounded-xl text-left border text-xs transition-all duration-200 ${
+                aria-label={`Select ${r.title} (${r.category}) as anchor moment`}
+                className={`p-2.5 rounded-xl text-left border text-xs transition-all duration-200 focus-visible:ring-2 focus-visible:ring-sky-400 ${
                   isSelected
                     ? 'bg-sky-500/20 border-sky-500/50 text-white shadow-glow-cyan'
                     : 'bg-white/[0.03] border-white/5 text-slate-400 hover:bg-white/10 hover:text-slate-200'
@@ -63,7 +66,7 @@ export const ConnectionGraph: React.FC<ConnectionGraphProps> = ({
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-white/10">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-mono mb-2">
-              <Network className="w-3.5 h-3.5" />
+              <Network className="w-3.5 h-3.5" aria-hidden="true" />
               <span>RAW DATA → ACTIVITY CLUSTER</span>
             </div>
             <h3 className="text-2xl font-bold text-white tracking-tight">
@@ -74,7 +77,7 @@ export const ConnectionGraph: React.FC<ConnectionGraphProps> = ({
           {/* Narrative Explanation Pill */}
           <div className="p-3.5 rounded-xl bg-sky-950/40 border border-sky-500/30 text-xs text-sky-200 max-w-md">
             <div className="flex items-center gap-1.5 font-mono font-bold text-sky-400 mb-1">
-              <CheckCircle2 className="w-4 h-4" />
+              <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
               <span>CLUSTER ANALYSIS</span>
             </div>
             <p className="leading-relaxed font-sans">{narrative}</p>
@@ -91,8 +94,17 @@ export const ConnectionGraph: React.FC<ConnectionGraphProps> = ({
             </span>
 
             <div
+              tabIndex={0}
+              role="button"
               onClick={() => onSelectReceipt(sourceReceipt)}
-              className={`w-full max-w-md receipt-paper rounded-2xl p-5 border ${sourceCatStyles.border} shadow-glow-cyan hover:scale-[1.02] transition-all cursor-pointer`}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onSelectReceipt(sourceReceipt);
+                }
+              }}
+              aria-label={`Anchor node: ${sourceReceipt.title}. Click to view details.`}
+              className={`w-full max-w-md receipt-paper rounded-2xl p-5 border ${sourceCatStyles.border} shadow-glow-cyan hover:scale-[1.02] transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-sky-400`}
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
@@ -138,16 +150,25 @@ export const ConnectionGraph: React.FC<ConnectionGraphProps> = ({
                     <div className="flex flex-col items-center my-2">
                       <div className="w-0.5 h-6 bg-gradient-to-b from-sky-500 to-indigo-500 animate-pulse" />
                       <div className="px-3 py-1 rounded-full bg-surface-border text-[10px] font-mono text-slate-300 border border-white/10 shadow-sm my-1 flex items-center gap-1.5">
-                        <Clock className="w-3 h-3 text-sky-400" />
+                        <Clock className="w-3 h-3 text-sky-400" aria-hidden="true" />
                         <span>{node.description}</span>
                       </div>
-                      <ArrowDown className="w-4 h-4 text-sky-400 animate-bounce" />
+                      <ArrowDown className="w-4 h-4 text-sky-400 animate-bounce" aria-hidden="true" />
                     </div>
 
                     {/* Connected Node Card */}
                     <div
+                      tabIndex={0}
+                      role="button"
                       onClick={() => onSelectReceipt(connReceipt)}
-                      className="w-full max-w-md receipt-paper rounded-2xl p-5 border border-white/10 hover:border-sky-500/40 hover:scale-[1.02] transition-all cursor-pointer"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          onSelectReceipt(connReceipt);
+                        }
+                      }}
+                      aria-label={`Connected node: ${connReceipt.title}. Relationship: ${node.description}`}
+                      className="w-full max-w-md receipt-paper rounded-2xl p-5 border border-white/10 hover:border-sky-500/40 hover:scale-[1.02] transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-sky-400"
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
@@ -159,10 +180,12 @@ export const ConnectionGraph: React.FC<ConnectionGraphProps> = ({
                           </span>
                         </div>
                         <button
+                          type="button"
                           onClick={(e) => {
                             e.stopPropagation();
                             onChangeSource(connReceipt);
                           }}
+                          aria-label={`Set ${connReceipt.title} as new anchor moment`}
                           className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-slate-400 hover:text-sky-300 border border-white/10"
                         >
                           Set as Anchor
@@ -174,7 +197,7 @@ export const ConnectionGraph: React.FC<ConnectionGraphProps> = ({
 
                       <div className="flex items-center justify-between text-xs font-mono text-slate-400 pt-2 border-t border-dashed border-white/10">
                         <div className="flex items-center gap-1">
-                          <MapPin className="w-3 h-3 text-slate-500" />
+                          <MapPin className="w-3 h-3 text-slate-500" aria-hidden="true" />
                           <span>{connReceipt.location || 'Local Trace'}</span>
                         </div>
                         <span className="text-sky-400 font-semibold">{connReceipt.time}</span>

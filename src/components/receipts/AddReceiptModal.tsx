@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Receipt, ReceiptType } from '../data/dataTypes';
-import { X, Plus, Music, CreditCard, Home, Sparkles, MapPin, Clock } from 'lucide-react';
+import { Receipt, ReceiptType } from '../../data/dataTypes';
+import { X, Plus, Music, CreditCard, Home } from 'lucide-react';
 
 interface AddReceiptModalProps {
   isOpen: boolean;
@@ -81,30 +81,35 @@ export const AddReceiptModal: React.FC<AddReceiptModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-      
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="add-receipt-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+    >
       <div 
         className="relative w-full max-w-xl bg-[#0F121A] border border-sky-500/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
-        
         {/* Header */}
         <div className="p-5 bg-surface-border/30 border-b border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-xl bg-sky-500/20 text-sky-400">
-              <Plus className="w-5 h-5" />
+              <Plus className="w-5 h-5" aria-hidden="true" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white tracking-tight">LOG A NEW MOMENT TRACE</h3>
+              <h3 id="add-receipt-title" className="text-lg font-bold text-white tracking-tight">LOG A NEW MOMENT TRACE</h3>
               <p className="text-xs text-slate-400">Add a custom digital receipt to recalculate live stories & connections.</p>
             </div>
           </div>
 
           <button
+            type="button"
             onClick={onClose}
+            aria-label="Close log moment modal"
             className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
@@ -114,9 +119,10 @@ export const AddReceiptModal: React.FC<AddReceiptModalProps> = ({
           {/* Type Selector */}
           <div className="space-y-1.5">
             <label className="text-slate-400 font-bold uppercase tracking-wider block">1. MOMENT TYPE</label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2" role="group" aria-label="Select Receipt Type">
               <button
                 type="button"
+                aria-pressed={type === 'music'}
                 onClick={() => { setType('music'); setCategory('Music'); }}
                 className={`p-3 rounded-xl border flex flex-col items-center gap-1 transition-all ${
                   type === 'music'
@@ -130,6 +136,7 @@ export const AddReceiptModal: React.FC<AddReceiptModalProps> = ({
 
               <button
                 type="button"
+                aria-pressed={type === 'transaction'}
                 onClick={() => { setType('transaction'); setCategory('Food & Dining'); }}
                 className={`p-3 rounded-xl border flex flex-col items-center gap-1 transition-all ${
                   type === 'transaction'
@@ -143,6 +150,7 @@ export const AddReceiptModal: React.FC<AddReceiptModalProps> = ({
 
               <button
                 type="button"
+                aria-pressed={type === 'household'}
                 onClick={() => { setType('household'); setCategory('Transportation'); }}
                 className={`p-3 rounded-xl border flex flex-col items-center gap-1 transition-all ${
                   type === 'household'
@@ -159,10 +167,11 @@ export const AddReceiptModal: React.FC<AddReceiptModalProps> = ({
           {/* Title & Subtitle */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-slate-400 block font-bold">
+              <label htmlFor="input-title-moment" className="text-slate-400 block font-bold">
                 {type === 'music' ? 'TRACK TITLE *' : 'MERCHANT / ITEM *'}
               </label>
               <input
+                id="input-title-moment"
                 type="text"
                 required
                 value={title}
@@ -173,10 +182,11 @@ export const AddReceiptModal: React.FC<AddReceiptModalProps> = ({
             </div>
 
             <div className="space-y-1">
-              <label className="text-slate-400 block font-bold">
+              <label htmlFor="input-subtitle-moment" className="text-slate-400 block font-bold">
                 {type === 'music' ? 'ARTIST NAME' : 'PAYMENT MODE / SUBCATEGORY'}
               </label>
               <input
+                id="input-subtitle-moment"
                 type="text"
                 value={subtitle}
                 onChange={(e) => setSubtitle(e.target.value)}
@@ -189,8 +199,9 @@ export const AddReceiptModal: React.FC<AddReceiptModalProps> = ({
           {/* Category Dropdown & Amount/Duration */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-slate-400 block font-bold">CATEGORY</label>
+              <label htmlFor="select-category-moment" className="text-slate-400 block font-bold">CATEGORY</label>
               <select
+                id="select-category-moment"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full px-3 py-2.5 rounded-xl bg-surface border border-white/10 text-white font-sans focus:outline-none focus:border-sky-500"
@@ -203,8 +214,9 @@ export const AddReceiptModal: React.FC<AddReceiptModalProps> = ({
 
             {type !== 'music' ? (
               <div className="space-y-1">
-                <label className="text-slate-400 block font-bold">AMOUNT (₹)</label>
+                <label htmlFor="input-amount-moment" className="text-slate-400 block font-bold">AMOUNT (₹)</label>
                 <input
+                  id="input-amount-moment"
                   type="number"
                   step="any"
                   value={amount}
@@ -220,6 +232,7 @@ export const AddReceiptModal: React.FC<AddReceiptModalProps> = ({
                   <input
                     type="number"
                     value={durationMins}
+                    aria-label="Duration minutes"
                     onChange={(e) => setDurationMins(e.target.value)}
                     placeholder="Mins"
                     className="w-1/2 px-3 py-2.5 rounded-xl bg-surface border border-white/10 text-sky-300 font-bold focus:outline-none focus:border-sky-500"
@@ -227,6 +240,7 @@ export const AddReceiptModal: React.FC<AddReceiptModalProps> = ({
                   <input
                     type="number"
                     value={durationSecs}
+                    aria-label="Duration seconds"
                     onChange={(e) => setDurationSecs(e.target.value)}
                     placeholder="Secs"
                     className="w-1/2 px-3 py-2.5 rounded-xl bg-surface border border-white/10 text-sky-300 font-bold focus:outline-none focus:border-sky-500"
@@ -239,8 +253,9 @@ export const AddReceiptModal: React.FC<AddReceiptModalProps> = ({
           {/* Location & Payment Mode */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-slate-400 block font-bold">LOCATION / CITY</label>
+              <label htmlFor="input-location-moment" className="text-slate-400 block font-bold">LOCATION / CITY</label>
               <input
+                id="input-location-moment"
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
@@ -250,8 +265,9 @@ export const AddReceiptModal: React.FC<AddReceiptModalProps> = ({
             </div>
 
             <div className="space-y-1">
-              <label className="text-slate-400 block font-bold">PAYMENT / STREAM MODE</label>
+              <label htmlFor="input-mode-moment" className="text-slate-400 block font-bold">PAYMENT / STREAM MODE</label>
               <input
+                id="input-mode-moment"
                 type="text"
                 value={mode}
                 onChange={(e) => setMode(e.target.value)}
@@ -263,8 +279,9 @@ export const AddReceiptModal: React.FC<AddReceiptModalProps> = ({
 
           {/* Notes */}
           <div className="space-y-1">
-            <label className="text-slate-400 block font-bold">NOTES & DETAILS</label>
+            <label htmlFor="input-note-moment" className="text-slate-400 block font-bold">NOTES & DETAILS</label>
             <textarea
+              id="input-note-moment"
               rows={2}
               value={note}
               onChange={(e) => setNote(e.target.value)}
