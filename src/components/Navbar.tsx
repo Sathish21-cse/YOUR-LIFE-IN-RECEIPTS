@@ -5,6 +5,7 @@ interface NavbarProps {
   activeTab: 'overview' | 'explore' | 'connections' | 'stories';
   setActiveTab: (tab: 'overview' | 'explore' | 'connections' | 'stories') => void;
   onOpenSearch: () => void;
+  onOpenAddReceipt: () => void;
   totalCount: number;
 }
 
@@ -12,6 +13,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   setActiveTab,
   onOpenSearch,
+  onOpenAddReceipt,
   totalCount
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -77,7 +79,16 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Add Moment Button */}
+          <button
+            onClick={onOpenAddReceipt}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-xs font-mono font-bold text-white shadow-glow-cyan transition-all hover:scale-105"
+          >
+            <span className="text-sm">+</span>
+            <span>LOG MOMENT</span>
+          </button>
+
           {/* Quick Search Button */}
           <button
             onClick={onOpenSearch}

@@ -10,6 +10,7 @@ interface ExplorePageProps {
   data: DataPayload;
   onSelectReceipt: (receipt: Receipt) => void;
   onFindConnections: (receipt: Receipt) => void;
+  onOpenAddReceipt?: () => void;
   initialQuery?: string;
 }
 
@@ -19,6 +20,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
   data,
   onSelectReceipt,
   onFindConnections,
+  onOpenAddReceipt,
   initialQuery = ''
 }) => {
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
@@ -60,17 +62,28 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 pb-24">
       
       {/* Page Header */}
-      <div className="space-y-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-300 text-xs font-mono">
-          <Compass className="w-3.5 h-3.5" />
-          <span>DIGITAL RECEIPT EXPLORER</span>
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-300 text-xs font-mono">
+            <Compass className="w-3.5 h-3.5" />
+            <span>DIGITAL RECEIPT EXPLORER</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+            RECEIPT TRACES
+          </h1>
+          <p className="text-sm text-slate-400">
+            Search, filter, and inspect thermal digital receipt records from music history, household purchases, and card transactions.
+          </p>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-          RECEIPT TRACES
-        </h1>
-        <p className="text-sm text-slate-400">
-          Search, filter, and inspect thermal digital receipt records from music history, household purchases, and card transactions.
-        </p>
+
+        {onOpenAddReceipt && (
+          <button
+            onClick={onOpenAddReceipt}
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-mono text-xs font-bold shadow-glow-cyan hover:scale-[1.02] transition-all flex-shrink-0"
+          >
+            <span>+ ADD NEW RECEIPT</span>
+          </button>
+        )}
       </div>
 
       {/* Search & Filter Controls */}

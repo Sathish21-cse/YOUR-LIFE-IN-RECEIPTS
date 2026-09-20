@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { DataPayload, PatternInsight, Receipt, StoryCluster } from './data/dataTypes';
 import receiptsDataRaw from './data/receiptsData.json';
 import { Navbar } from './components/Navbar';
@@ -9,18 +9,55 @@ import { StoriesPage } from './pages/StoriesPage';
 import { ReceiptDetailModal } from './components/ReceiptDetailModal';
 import { StoryViewModal } from './components/StoryViewModal';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
+import { AddReceiptModal } from './components/AddReceiptModal';
 
-const data = receiptsDataRaw as DataPayload;
+const initialData = receiptsDataRaw as DataPayload;
 
 export function App() {
   const [activeTab, setActiveTab] = useState<'overview' | 'explore' | 'connections' | 'stories'>('overview');
   
+  // Dynamic receipts list state
+  const [receiptsList, setReceiptsList] = useState<Receipt[]>(initialData.receipts);
+
   // Modals & Selected States
   const [selectedReceipt, setSelectedReceipt] = useState<Receipt | null>(null);
   const [selectedAnchorReceipt, setSelectedAnchorReceipt] = useState<Receipt | null>(null);
   const [activeStory, setActiveStory] = useState<StoryCluster | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isAddReceiptOpen, setIsAddReceiptOpen] = useState(false);
   const [exploreQuery, setExploreQuery] = useState('');
+
+  // Dynamically recompute summary & payload when receiptsList updates
+  const dynamicPayload: DataPayload = useMemo(() => {
+    const musicCount = receiptsList.filter(r => r.type === 'music').length;
+    const txCount = receiptsList.filter(r => r.type !== 'music').length;
+    const totalSpent = receiptsList.reduce((acc, r) => acc + (r.amount || 0), 0);
+    const totalMs = receiptsList.reduce((acc, r) => acc + (r.durationMs || 0), 0);
+    const listeningHours = Math.round((totalMs / (1000 * 3600)) * 10) / 10;
+
+    const uniqueArtists = new Set(receiptsList.map(r => r.artist).filter(Boolean)).size;
+    const uniqueMerchants = new Set(receiptsList.map(r => r.merchant).filter(Boolean)).size;
+
+    return {
+      ...initialData,
+      receipts: receiptsList,
+      summary: {
+        totalReceipts: receiptsList.length,
+        musicCount,
+        transactionCount: txCount,
+        totalSpent,
+        listeningHours,
+        uniqueArtists,
+        uniqueMerchants,
+        patternsDiscovered: initialData.patterns.length
+      }
+    };
+  }, [receiptsList]);
+
+  const handleAddReceipt = (newReceipt: Receipt) => {
+    setReceiptsList(prev => [newReceipt, ...prev]);
+    setSelectedReceipt(newReceipt); // open details modal for newly created receipt
+  };
 
   const handleOpenReceiptDetail = (receipt: Receipt) => {
     setSelectedReceipt(receipt);
@@ -33,8 +70,7 @@ export function App() {
   };
 
   const handleSelectPattern = (_pattern: PatternInsight) => {
-    // Select an anchor receipt associated with pattern
-    const sampleAnchor = data.receipts.find(r => r.tags.includes('Late Night')) || data.receipts[0];
+    const sampleAnchor = receiptsList.find(r => r.tags.includes('Late Night')) || receiptsList[0];
     setSelectedAnchorReceipt(sampleAnchor);
     setActiveTab('connections');
   };
@@ -52,14 +88,15 @@ export function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onOpenSearch={() => setIsSearchOpen(true)}
-        totalCount={data.summary.totalReceipts}
+        onOpenAddReceipt={() => setIsAddReceiptOpen(true)}
+        totalCount={dynamicPayload.summary.totalReceipts}
       />
 
       {/* Main Page View Router */}
       <main className="flex-1 pt-6">
         {activeTab === 'overview' && (
           <HomePage
-            data={data}
+            data={dynamicPayload}
             onNavigateTab={setActiveTab}
             onSelectPattern={handleSelectPattern}
             onOpenStory={(s) => setActiveStory(s)}
@@ -69,16 +106,17 @@ export function App() {
 
         {activeTab === 'explore' && (
           <ExplorePage
-            data={data}
+            data={dynamicPayload}
             onSelectReceipt={handleOpenReceiptDetail}
             onFindConnections={handleFindConnectionsForReceipt}
+            onOpenAddReceipt={() => setIsAddReceiptOpen(true)}
             initialQuery={exploreQuery}
           />
         )}
 
         {activeTab === 'connections' && (
           <ConnectionsPage
-            data={data}
+            data={dynamicPayload}
             selectedAnchorReceipt={selectedAnchorReceipt}
             onSelectReceipt={handleOpenReceiptDetail}
             onSetAnchorReceipt={(r) => setSelectedAnchorReceipt(r)}
@@ -87,7 +125,7 @@ export function App() {
 
         {activeTab === 'stories' && (
           <StoriesPage
-            data={data}
+            data={dynamicPayload}
             onOpenStory={(s) => setActiveStory(s)}
           />
         )}
@@ -100,7 +138,7 @@ export function App() {
         </p>
         <p>Built for WEBRUSH Hackathon · Frontend Data Storytelling Experience</p>
         <p className="text-[10px] text-slate-600">
-          Loaded {data.summary.totalReceipts.toLocaleString()} traces across Spotify Listening History & Multi-Facet Financial Transactions.
+          Loaded {dynamicPayload.summary.totalReceipts.toLocaleString()} traces across Spotify Listening History & Multi-Facet Financial Transactions.
         </p>
       </footer>
 
@@ -114,7 +152,7 @@ export function App() {
       {/* Story View Player Modal */}
       <StoryViewModal
         story={activeStory}
-        allReceipts={data.receipts}
+        allReceipts={dynamicPayload.receipts}
         onClose={() => setActiveStory(null)}
         onSelectReceipt={handleOpenReceiptDetail}
       />
@@ -123,9 +161,17 @@ export function App() {
       <GlobalSearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-        data={data}
+        data={dynamicPayload}
         onSelectReceipt={handleOpenReceiptDetail}
         onGoToExploreWithQuery={handleGoToExploreWithQuery}
+      />
+
+      {/* Add Receipt Modal */}
+      <AddReceiptModal
+        isOpen={isAddReceiptOpen}
+        onClose={() => setIsAddReceiptOpen(false)}
+        onAddReceipt={handleAddReceipt}
+        categories={dynamicPayload.categories}
       />
 
     </div>
