@@ -16,6 +16,25 @@ const initialData = receiptsDataRaw as DataPayload;
 export function App() {
   const [activeTab, setActiveTab] = useState<'overview' | 'explore' | 'connections' | 'stories'>('overview');
   
+  // Theme state: 'dark' | 'light'
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  // Sync theme with document.documentElement class
+  React.useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+      root.classList.remove('light');
+    } else {
+      root.classList.add('light');
+      root.classList.remove('dark');
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
   // Dynamic receipts list state
   const [receiptsList, setReceiptsList] = useState<Receipt[]>(initialData.receipts);
 
@@ -90,6 +109,8 @@ export function App() {
         onOpenSearch={() => setIsSearchOpen(true)}
         onOpenAddReceipt={() => setIsAddReceiptOpen(true)}
         totalCount={dynamicPayload.summary.totalReceipts}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
 
       {/* Main Page View Router */}

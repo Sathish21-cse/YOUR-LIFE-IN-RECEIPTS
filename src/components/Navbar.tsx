@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Sparkles, Receipt as ReceiptIcon, Network, BookOpen, Menu, X, Layers } from 'lucide-react';
+import { Search, Sparkles, Receipt as ReceiptIcon, Network, BookOpen, Menu, X, Layers, Sun, Moon } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: 'overview' | 'explore' | 'connections' | 'stories';
@@ -7,6 +7,8 @@ interface NavbarProps {
   onOpenSearch: () => void;
   onOpenAddReceipt: () => void;
   totalCount: number;
+  theme: 'dark' | 'light';
+  onToggleTheme: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -14,7 +16,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   onOpenSearch,
   onOpenAddReceipt,
-  totalCount
+  totalCount,
+  theme,
+  onToggleTheme
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -80,6 +84,15 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Action Controls */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Theme Toggle Button */}
+          <button
+            onClick={onToggleTheme}
+            title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-sky-400 transition-all"
+          >
+            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-500" />}
+          </button>
+
           {/* Add Moment Button */}
           <button
             onClick={onOpenAddReceipt}
